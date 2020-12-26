@@ -1,39 +1,36 @@
 <template>
-  <div class="board">
+  <div class="board" @click="$store.commit('setupStartPosition')">
     <div 
-      v-for="(piece, i) in pieces" :key="i" 
-      style="{ background: getSquareBg(i) }"
+      v-for="(piece, i) in getBoard(true)" :key="i" 
+      :style="{ background: getSquareBg(i) }"
     >
       <Image 
-        v-if="!!piece" 
-        :name="getPieceSVGName(i)" 
-        :color="piece.color" 
+        v-if="typeof piece === 'object'" 
+        :name="getPieceSVGName(piece)" 
+        :color="getPieceColor(piece)" 
       />
     </div>
   </div>
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
+import { mapGetters } from 'vuex'
 import Image from './Image'
 
 export default {
   components: { Image },
   computed: { 
-    ...mapState(['pieces', 'theme']), 
-    ...mapGetters(['getSquareBg', 'getPieceSVGName']) 
+    ...mapGetters(['getBoard', 'getSquareBg', 'getPieceSVGName', 'getPieceColor']) 
   },
   mounted() {
-    console.log(this.pieces)
+    
   },
 }
 </script>
 <style scoped>
   .board {
-    width: 500px;
-    height: 500px;
     display: grid;
-    grid-template-columns: repeat(8, 1fr);
-    grid-template-rows: repeat(8, 1fr);
+    grid-template-columns: repeat(8, 50px);
+    grid-template-rows: repeat(8, 50px);
   }
 </style>
