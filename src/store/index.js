@@ -19,9 +19,10 @@ export default createStore({
         pieceSVGName: typeof piece === 'object' ? `${piece.side}-${piece.type}-${t.name}` : null,
         valid: index == s || (typeof m[s] === 'object' && m[s][index])
       }))
-      console.log("re-map render data", renderData)
       return w ? renderData.reverse() : renderData
-    }
+    },
+    isAllowedMove: ({ allowedMoves: m, selectedSquare: s, isWhiteView: w }) => 
+      to => typeof m[s] === 'object' && m[s][w ? 63 - to : to] === true
   },
   mutations: {
     selectSquare: (state, index) => state.selectedSquare = state.isWhiteView ? 63 - index : index,
@@ -29,6 +30,10 @@ export default createStore({
     fillAllowedMoves: state => {
       for (let i = 8; i < 16; i++) state.allowedMoves[i] = { [i+8]: true, [i+16]: true }
       for (let i = 1; i < 8; i+=5) state.allowedMoves[i] = { [i+15]: true, [i+17]: true }
+    },
+    makeMove: (state, to) => {
+      state.board[state.isWhiteView ? 63 - to : to] = state.board[state.selectedSquare]
+      state.board[state.selectedSquare] = {}
     },
     setupStartPosition: state => {
       const startPos = [];
@@ -51,10 +56,6 @@ export default createStore({
         }
       }
       state.board = startPos
-    },
-    makeMove: (state, { from, to }) => {
-      state.board[to] = state.board[from]
-      state.board[from] = null
     }
   }
 })

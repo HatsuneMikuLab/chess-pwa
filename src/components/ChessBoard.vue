@@ -8,7 +8,7 @@
     >
       <Image 
         v-if="typeof data.pieceSVGName === 'string'" 
-        :name="data.pieceSVGName" 
+        :name="data.pieceSVGName"
       />
       <div :class="{ 'valid-move': data.valid }"></div>
     </div>
@@ -16,18 +16,24 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import Image from './Image'
 
 export default {
   components: { Image },
   computed: { 
-    ...mapGetters(['getBoardRenderData']) 
+    ...mapGetters(['getBoardRenderData', 'isAllowedMove']),
+    ...mapState(['selectedSquare'])
   },
   methods: {
     selectSquare(index) {
-      this.$store.commit('selectSquare', index)
-      this.$store.commit('fillAllowedMoves')
+      if (this.isAllowedMove(index)) {
+        this.$store.commit('makeMove', index)
+        this.$store.commit('selectSquare', null)
+      } else {
+        this.$store.commit('selectSquare', index)
+        this.$store.commit('fillAllowedMoves')
+      }
     }
   },
   created() {
