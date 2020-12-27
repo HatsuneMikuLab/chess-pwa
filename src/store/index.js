@@ -4,6 +4,7 @@ export default createStore({
   state: {
     board: [],
     isWhiteView: true,
+    selectedSquare: null,
     allowedMoves: [],
     theme: {
       name: 'basic',
@@ -12,15 +13,18 @@ export default createStore({
     }
   },
   getters: {
-    getBoardRenderData: ({ board: b, theme: t, isWhiteView: w }) => {
+    getBoardRenderData: ({ board: b, theme: t, isWhiteView: w, selectedSquare: s }) => {
       const renderData = b.map((piece, index) => ({
         squareBg: ~~(index / 8) % 2 === index % 2 ? t.lightSquareBg : t.darkSquareBg,
-        pieceSVGName: typeof piece === 'object' ? `${piece.side}-${piece.type}-${t.name}` : null
+        pieceSVGName: typeof piece === 'object' ? `${piece.side}-${piece.type}-${t.name}` : null,
+        valid: index == s
       }))
+      console.log("re-map render data", renderData)
       return w ? renderData.reverse() : renderData
     }
   },
   mutations: {
+    selectSquare: (state, index) => state.selectedSquare = state.isWhiteView ? 63 - index : index,
     setupStartPosition: state => {
       const startPos = [];
       for (let i = 0; i < 64; i++) {

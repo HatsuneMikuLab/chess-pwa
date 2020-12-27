@@ -51,7 +51,7 @@ export default {
   .draggable {
     position: relative;
   }
-  .draggable:active {
+  .draggable:hover {
     cursor: pointer;
   }
 </style>
