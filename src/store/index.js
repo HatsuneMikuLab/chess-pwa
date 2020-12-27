@@ -17,7 +17,7 @@ export default createStore({
       const renderData = b.map((piece, index) => ({
         squareBg: ~~(index / 8) % 2 === index % 2 ? t.lightSquareBg : t.darkSquareBg,
         pieceSVGName: typeof piece === 'object' ? `${piece.side}-${piece.type}-${t.name}` : null,
-        valid: index == s || (typeof m[s] === 'object' && m[s].includes(index))
+        valid: index == s || (typeof m[s] === 'object' && m[s][index])
       }))
       console.log("re-map render data", renderData)
       return w ? renderData.reverse() : renderData
@@ -27,8 +27,8 @@ export default createStore({
     selectSquare: (state, index) => state.selectedSquare = state.isWhiteView ? 63 - index : index,
     // JUST FOR TESTING PURPOSE. IT NEEDS TO BE FETCHED FROM BACKEND
     fillAllowedMoves: state => {
-      for (let i = 8; i < 16; i++) state.allowedMoves[i] = [i+8, i+16]
-      for (let i = 1; i < 8; i+=5) state.allowedMoves[i] = [i+15, i+17]
+      for (let i = 8; i < 16; i++) state.allowedMoves[i] = { [i+8]: true, [i+16]: true }
+      for (let i = 1; i < 8; i+=5) state.allowedMoves[i] = { [i+15]: true, [i+17]: true }
     },
     setupStartPosition: state => {
       const startPos = [];
