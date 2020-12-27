@@ -1,8 +1,8 @@
 <template>
-  <div class="board" @click="$store.commit('setupStartPosition')">
+  <div class="board">
     <div 
       v-for="(data, i) in getBoardRenderData" :key="i" 
-      @click="$store.commit('selectSquare', i)"
+      @click="selectSquare(i)"
       class="square"
       :style="{ background: data.squareBg }"
     >
@@ -23,6 +23,12 @@ export default {
   components: { Image },
   computed: { 
     ...mapGetters(['getBoardRenderData']) 
+  },
+  methods: {
+    selectSquare(index) {
+      this.$store.commit('selectSquare', index)
+      this.$store.commit('fillAllowedMoves')
+    }
   },
   created() {
     console.log(this.$store.getters.getBoardRenderData)

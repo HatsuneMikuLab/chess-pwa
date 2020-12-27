@@ -5,7 +5,7 @@ export default createStore({
     board: [],
     isWhiteView: true,
     selectedSquare: null,
-    allowedMoves: [],
+    allowedMoves: {},
     theme: {
       name: 'basic',
       lightSquareBg: 'rgb(224,164,79)',
@@ -13,11 +13,11 @@ export default createStore({
     }
   },
   getters: {
-    getBoardRenderData: ({ board: b, theme: t, isWhiteView: w, selectedSquare: s }) => {
+    getBoardRenderData: ({ board: b, theme: t, isWhiteView: w, selectedSquare: s, allowedMoves: m }) => {
       const renderData = b.map((piece, index) => ({
         squareBg: ~~(index / 8) % 2 === index % 2 ? t.lightSquareBg : t.darkSquareBg,
         pieceSVGName: typeof piece === 'object' ? `${piece.side}-${piece.type}-${t.name}` : null,
-        valid: index == s
+        valid: index == s || (typeof m[s] === 'object' && m[s].includes(index))
       }))
       console.log("re-map render data", renderData)
       return w ? renderData.reverse() : renderData
@@ -25,6 +25,11 @@ export default createStore({
   },
   mutations: {
     selectSquare: (state, index) => state.selectedSquare = state.isWhiteView ? 63 - index : index,
+    // JUST FOR TESTING PURPOSE. IT NEEDS TO BE FETCHED FROM BACKEND
+    fillAllowedMoves: state => {
+      for (let i = 8; i < 16; i++) state.allowedMoves[i] = [i+8, i+16]
+      for (let i = 1; i < 8; i+=5) state.allowedMoves[i] = [i+15, i+17]
+    },
     setupStartPosition: state => {
       const startPos = [];
       for (let i = 0; i < 64; i++) {
