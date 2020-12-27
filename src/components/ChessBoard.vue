@@ -1,13 +1,9 @@
 <template>
   <div class="board" @click="$store.commit('setupStartPosition')">
-    <div 
-      v-for="(piece, i) in getBoard(true)" :key="i" 
-      :style="{ background: getSquareBg(i) }"
-    >
+    <div v-for="(data, i) in getBoardRenderData" :key="i" :style="{ background: data.squareBg}">
       <Image 
-        v-if="typeof piece === 'object'" 
-        :name="getPieceSVGName(piece)" 
-        :color="getPieceColor(piece)" 
+        v-if="typeof data === 'object' && typeof data.pieceSVGName === 'string'" 
+        :name="data.pieceSVGName" 
       />
     </div>
   </div>
@@ -20,10 +16,12 @@ import Image from './Image'
 export default {
   components: { Image },
   computed: { 
-    ...mapGetters(['getBoard', 'getSquareBg', 'getPieceSVGName', 'getPieceColor']) 
+    ...mapGetters(['getBoardRenderData']) 
   },
-  mounted() {
-    
+  created() {
+    console.log(this.$store.getters.getBoardRenderData)
+    this.$store.commit('setupStartPosition')
+    console.log(this.$store.getters.getBoardRenderData)
   },
 }
 </script>

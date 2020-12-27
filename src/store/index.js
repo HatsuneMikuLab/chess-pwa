@@ -2,27 +2,45 @@ import { createStore } from 'vuex'
 
 export default createStore({
   state: {
-    board: Array(64),
+    board: [],
+    isWhiteView: true,
     allowedMoves: [],
     theme: {
       name: 'basic',
       lightSquareBg: 'rgb(224,164,79)',
-      darkSquareBg: 'rgb(165,79,8)',
-      player1Color: 'rgb(255,255,255)',
-      player2Color: 'rgb(0,0,0)'
+      darkSquareBg: 'rgb(165,79,8)'
     }
   },
   getters: {
-    getBoard: ({ board: b }) => isWhiteSide => isWhiteSide ? b.reverse() : b,
-    getSquareBg: ({ theme: t }) => id => ~~(id / 8) % 2 === id % 2 ? t.lightSquareBg : t.darkSquareBg,
-    getPieceSVGName: ({ theme: t }) => piece => `${piece.type}_${t.name}`,
-    getPieceColor: ({ theme: t }) => piece => piece.player === 1 ? t.player1Color : t.player2Color
+    getBoardRenderData: ({ board: b, theme: t, isWhiteView: w }) => {
+      const renderData = b.map((piece, index) => ({
+        squareBg: ~~(index / 8) % 2 === index % 2 ? t.lightSquareBg : t.darkSquareBg,
+        pieceSVGName: typeof piece === 'object' ? `${piece.side}-${piece.type}-${t.name}` : null
+      }))
+      return w ? renderData.reverse() : renderData
+    }
   },
   mutations: {
     setupStartPosition: state => {
-      const startPos = Array(64);
-      for(let i = 8; i < 16; i++) startPos[i] = { type: 'pawn', player: 1 }
-      for(let i = 48; i < 56; i++) startPos[i] = { type: 'pawn', player: 2 }
+      const startPos = [];
+      for (let i = 0; i < 64; i++) {
+        switch (true) {
+          case i >= 8 && i < 16: startPos[i] = { type: 'pawn', side: 'white' }; break;
+          case i >= 48 && i < 56: startPos[i] = { type: 'pawn', side: 'black' }; break;
+          case i === 1 || i === 6: startPos[i] = { type: 'knight', side: 'white' }; break
+          case i === 57 || i === 62: startPos[i] = { type: 'knight', side: 'black' }; break
+          case i === 2 || i === 5: startPos[i] = { type: 'bishop', side: 'white' }; break
+          case i === 58 || i === 61: startPos[i] = { type: 'bishop', side: 'black' }; break
+          case i === 0 || i === 7: startPos[i] = { type: 'rook', side: 'white' }; break
+          case i === 56 || i === 63: startPos[i] = { type: 'rook', side: 'black' }; break
+          case i === 4: startPos[i] = { type: 'queen', side: 'white' }; break
+          case i === 60: startPos[i] = { type: 'queen', side: 'black' }; break
+          case i === 3: startPos[i] = { type: 'king', side: 'white' }; break
+          case i === 59: startPos[i] = { type: 'king', side: 'black' }; break
+
+          default: startPos[i] = {}
+        }
+      }
       state.board = startPos
     },
     makeMove: (state, { from, to }) => {
