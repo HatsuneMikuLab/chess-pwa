@@ -25,7 +25,7 @@ export default createStore({
       to => typeof m[s] === 'object' && m[s][w ? 63 - to : to] === true
   },
   mutations: {
-    selectSquare: (state, index) => state.selectedSquare = state.isWhiteView ? 63 - index : index,
+    selectSquare: (state, index) => state.selectedSquare = index ? state.isWhiteView ? 63 - index : index : null,
     // JUST FOR TESTING PURPOSE. IT NEEDS TO BE FETCHED FROM BACKEND
     fillAllowedMoves: state => {
       for (let i = 8; i < 16; i++) state.allowedMoves[i] = { [i+8]: true, [i+16]: true }
