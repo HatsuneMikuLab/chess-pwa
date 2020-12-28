@@ -42,8 +42,12 @@ export default {
   },
   methods: {
     calcAnimationOffset(index) {
-      const dy = ~~((this.selectedPiece - index) / 8)
-      const dx = (this.selectedPiece - index) % 8
+      const startRank = ~~(this.selectedPiece / 8)
+      const startFile = this.selectedPiece % 8
+      const endRank = ~~(index / 8)
+      const endFile = index % 8
+      const dy = startRank - endRank
+      const dx = startFile - endFile
       this.offsetY = (this.squareSize + 1) * dy
       this.offsetX = (this.squareSize + 1) * dx
       console.log(this.selectedPiece, index, dy, dx)
