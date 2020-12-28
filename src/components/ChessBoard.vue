@@ -1,16 +1,21 @@
 <template>
-  <div class="board">
+  <div 
+    class="board" 
+    :style="{ '--squareSize': pxSquareSize, '--offsetX': pxOffsetX, '--offsetY': pxOffsetY }"
+  >
     <div 
       v-for="(data, i) in getBoardRenderData" :key="i" 
-      @click="selectSquare(i)"
+      @click="selectSquare(data.position)"
       class="square"
       :style="{ background: data.squareBg }"
     >
-      <Image 
-        v-if="typeof data.pieceSVGName === 'string'" 
-        :name="data.pieceSVGName"
-      />
-      <div :class="{ 'valid-move': data.valid }"></div>
+      <transition name="move">
+        <Image 
+          v-if="typeof data.pieceSVGName === 'string'" 
+          :name="data.pieceSVGName"
+        />
+      </transition>
+      <div :class="{ 'allowed': data.allowed, 'selected': data.selected }"></div>
     </div>
   </div>
 </template>
@@ -21,33 +26,51 @@ import Image from './Image'
 
 export default {
   components: { Image },
+  data() {
+    return {
+      offsetX: 0,
+      offsetY: 0,
+      squareSize: 50
+    }
+  },
   computed: { 
     ...mapGetters(['getBoardRenderData', 'isAllowedMove']),
-    ...mapState(['selectedSquare'])
+    ...mapState(['selectedPiece']),
+    pxOffsetX() { return this.offsetX + 'px' },
+    pxOffsetY() { return this.offsetY + 'px' },
+    pxSquareSize() { return this.squareSize + 'px' },
   },
   methods: {
+    calcAnimationOffset(index) {
+      const dy = ~~((this.selectedPiece - index) / 8)
+      const dx = (this.selectedPiece - index) % 8
+      this.offsetY = (this.squareSize + 1) * dy
+      this.offsetX = (this.squareSize + 1) * dx
+      console.log(this.selectedPiece, index, dy, dx)
+    },
     selectSquare(index) {
       if (this.isAllowedMove(index)) {
+        this.calcAnimationOffset(index)
         this.$store.commit('makeMove', index)
-        this.$store.commit('selectSquare', null)
+        this.$store.commit('selectPiece', null)
       } else {
-        this.$store.commit('selectSquare', index)
-        this.$store.commit('fillAllowedMoves')
+        this.$store.commit('selectPiece', index)
       }
     }
   },
   created() {
-    console.log(this.$store.getters.getBoardRenderData)
     this.$store.commit('setupStartPosition')
-    console.log(this.$store.getters.getBoardRenderData)
+    this.$store.commit('fillAllowedMoves')
   },
 }
 </script>
 <style scoped>
   .board {
-    display: grid;
-    grid-template-columns: repeat(8, 50px);
-    grid-template-rows: repeat(8, 50px);
+    display: inline-grid;
+    grid-template-columns: repeat(8, var(--squareSize));
+    grid-template-rows: repeat(8, var(--squareSize));
+    grid-gap: 1px;
+    background: black;
   }
   .square {
     position: relative;
@@ -55,15 +78,30 @@ export default {
   .square:hover {
     opacity: 75%;
   }
-  .valid-move {
+  .selected, .allowed {
     position: absolute;
     top: 0;
     width: 100%;
     height: 100%;
     box-sizing: border-box;
-    border: 3px solid green;
     border-radius: 50%;
-    box-shadow: inset 0 0 10px green;
     background: transparent;
+  }
+  .selected, .allowed:hover {
+    border: 3px solid green;
+    box-shadow: inset 0 0 10px green;
+  }
+  .allowed {
+    border: 3px solid grey;
+    box-shadow: inset 0 0 10px grey;
+  } 
+  .move-enter-active, .move-leave-active {
+    transition: all 0.7s ease;
+  }
+  .move-enter-active {
+    opacity: 0;
+  }
+  .move-enter, .move-leave-to {
+    transform: translate(var(--offsetX), var(--offsetY));
   }
 </style>

@@ -4,7 +4,7 @@ export default createStore({
   state: {
     board: [],
     isWhiteView: true,
-    selectedSquare: null,
+    selectedPiece: null,
     allowedMoves: {},
     theme: {
       name: 'basic',
@@ -13,27 +13,36 @@ export default createStore({
     }
   },
   getters: {
-    getBoardRenderData: ({ board: b, theme: t, isWhiteView: w, selectedSquare: s, allowedMoves: m }) => {
+    getBoardRenderData: ({ board: b, theme: t, isWhiteView: w, selectedPiece: p, allowedMoves: m }) => {
       const renderData = b.map((piece, index) => ({
+        position: index,
         squareBg: ~~(index / 8) % 2 === index % 2 ? t.lightSquareBg : t.darkSquareBg,
-        pieceSVGName: typeof piece === 'object' ? `${piece.side}-${piece.type}-${t.name}` : null,
-        valid: index == s || (typeof m[s] === 'object' && m[s][index])
+        pieceSVGName: typeof piece === 'object' && piece.type ? `${piece.side}-${piece.type}-${t.name}` : null,
+        selected: index == p,
+        allowed: typeof m[p] === 'object' && m[p][index]
       }))
       return w ? renderData.reverse() : renderData
     },
-    isAllowedMove: ({ allowedMoves: m, selectedSquare: s, isWhiteView: w }) => 
-      to => typeof m[s] === 'object' && m[s][w ? 63 - to : to] === true
+    isAllowedMove: ({ allowedMoves: m, selectedPiece: p }) => 
+      to => typeof m[p] === 'object' && m[p][to] === true
   },
   mutations: {
-    selectSquare: (state, index) => state.selectedSquare = index ? state.isWhiteView ? 63 - index : index : null,
+    selectPiece: (state, pos) => {
+      if (!pos) {
+        state.selectedPiece = null
+        return
+      }
+      const target = state.board[pos]
+      state.selectedPiece = typeof target === 'object' && target.type ? pos : null
+    },
     // JUST FOR TESTING PURPOSE. IT NEEDS TO BE FETCHED FROM BACKEND
     fillAllowedMoves: state => {
       for (let i = 8; i < 16; i++) state.allowedMoves[i] = { [i+8]: true, [i+16]: true }
       for (let i = 1; i < 8; i+=5) state.allowedMoves[i] = { [i+15]: true, [i+17]: true }
     },
     makeMove: (state, to) => {
-      state.board[state.isWhiteView ? 63 - to : to] = state.board[state.selectedSquare]
-      state.board[state.selectedSquare] = {}
+      state.board[to] = state.board[state.selectedPiece]
+      state.board[state.selectedPiece] = {}
     },
     setupStartPosition: state => {
       const startPos = [];
