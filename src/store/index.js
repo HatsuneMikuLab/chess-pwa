@@ -5,9 +5,14 @@ export default createStore({
     board: [],
     isWhiteView: true,
     side: 'white',
+    turn: 'white',
     selectedPiece: null,
     allowedMoves: {},
     squareSize: 50,
+    clock: {
+      white: 5 * 60,
+      black: 5 * 60
+    },
     theme: {
       name: 'basic',
       lightSquareBg: 'rgb(224,164,79)',
@@ -31,7 +36,12 @@ export default createStore({
 
     getAllowedMoves4Piece: ({ selectedPiece: p, allowedMoves: m }) => typeof m[p] === 'object' ? m[p] : {},
 
-    getSquareSize: ({ squareSize: s }) => s + 'px'
+    getSquareSize: ({ squareSize: s }) => s + 'px',
+
+    getAnalogClockRotation: ({ clock: c }) => side => ({
+      min: c[side] / 10,
+      sec: (c[side] % 60) * 6
+    })
   },
   mutations: {
     selectPiece: (state, pos) => {
@@ -56,6 +66,7 @@ export default createStore({
       state.board[to] = state.board[state.selectedPiece]
       state.board[state.selectedPiece] = {}
     },
+    makeClockTick: (state) => { state.clock[state.turn]--; console.log(state.clock.white) },
     setupStartPosition: state => {
       const startPos = [];
       for (let i = 0; i < 64; i++) {
@@ -78,5 +89,8 @@ export default createStore({
       }
       state.board = startPos
     }
+  },
+  actions: {
+    startClock: ({ commit }) => setInterval(() => commit('makeClockTick'), 1000)
   }
 })

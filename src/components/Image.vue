@@ -1,23 +1,26 @@
 <template lang="">
   <svg 
-    viewBox="0 0 45 45" width="100%" height="100%" 
+    width="100%" height="100%" 
     :style="{ position: 'relative', left: posX, top: posY }"
     xmlns="http://www.w3.org/2000/svg" version="1.1"
   >
     <!-- PAWNS -->
-    <path 
-      v-if="name === 'white-pawn-basic'"
-      d="m 22.5,9 c -2.21,0 -4,1.79 -4,4 0,0.89 0.29,1.71 0.78,2.38 C 17.33,16.5 16,18.59 16,21 c 0,2.03 0.94,3.84 2.41,5.03 C 15.41,27.09 11,31.58 11,39.5 H 34 C 34,31.58 29.59,27.09 26.59,26.03 28.06,24.84 29,23.03 29,21 29,18.59 27.67,16.5 25.72,15.38 26.21,14.71 26.5,13.89 26.5,13 c 0,-2.21 -1.79,-4 -4,-4 z" 
-      style="opacity:1; fill:#FFF; fill-opacity:1; fill-rule:nonzero; stroke:#000000; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:miter; stroke-miterlimit:4; stroke-dasharray:none; stroke-opacity:1;"
-    />
-    <path 
-      v-if="name === 'black-pawn-basic'"
-      d="m 22.5,9 c -2.21,0 -4,1.79 -4,4 0,0.89 0.29,1.71 0.78,2.38 C 17.33,16.5 16,18.59 16,21 c 0,2.03 0.94,3.84 2.41,5.03 C 15.41,27.09 11,31.58 11,39.5 H 34 C 34,31.58 29.59,27.09 26.59,26.03 28.06,24.84 29,23.03 29,21 29,18.59 27.67,16.5 25.72,15.38 26.21,14.71 26.5,13.89 26.5,13 c 0,-2.21 -1.79,-4 -4,-4 z" 
-      style="opacity:1; fill:#000000; fill-opacity:1; fill-rule:nonzero; stroke:#000000; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:miter; stroke-miterlimit:4; stroke-dasharray:none; stroke-opacity:1;"
-    />
+    <svg v-if="name === 'white-pawn-basic'" viewBox="0 0 45 45">
+      <path 
+        d="m 22.5,9 c -2.21,0 -4,1.79 -4,4 0,0.89 0.29,1.71 0.78,2.38 C 17.33,16.5 16,18.59 16,21 c 0,2.03 0.94,3.84 2.41,5.03 C 15.41,27.09 11,31.58 11,39.5 H 34 C 34,31.58 29.59,27.09 26.59,26.03 28.06,24.84 29,23.03 29,21 29,18.59 27.67,16.5 25.72,15.38 26.21,14.71 26.5,13.89 26.5,13 c 0,-2.21 -1.79,-4 -4,-4 z" 
+        style="opacity:1; fill:#FFF; fill-opacity:1; fill-rule:nonzero; stroke:#000000; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:miter; stroke-miterlimit:4; stroke-dasharray:none; stroke-opacity:1;"
+      />
+    </svg>
+    <svg v-if="name === 'black-pawn-basic'" viewBox="0 0 45 45">
+      <path 
+        d="m 22.5,9 c -2.21,0 -4,1.79 -4,4 0,0.89 0.29,1.71 0.78,2.38 C 17.33,16.5 16,18.59 16,21 c 0,2.03 0.94,3.84 2.41,5.03 C 15.41,27.09 11,31.58 11,39.5 H 34 C 34,31.58 29.59,27.09 26.59,26.03 28.06,24.84 29,23.03 29,21 29,18.59 27.67,16.5 25.72,15.38 26.21,14.71 26.5,13.89 26.5,13 c 0,-2.21 -1.79,-4 -4,-4 z" 
+        style="opacity:1; fill:#000000; fill-opacity:1; fill-rule:nonzero; stroke:#000000; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:miter; stroke-miterlimit:4; stroke-dasharray:none; stroke-opacity:1;"
+      />
+    </svg>
+
     <!-- KNIGHTS -->
-    <g 
-      v-if="name === 'white-knight-basic'"
+    <svg 
+      v-if="name === 'white-knight-basic'" viewBox="0 0 45 45" 
       style="opacity:1; fill:#FFFFFF; fill-opacity:1; fill-rule:evenodd; stroke:#000000; stroke-width:1.5; stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4; stroke-dasharray:none; stroke-opacity:1;"
     >
       <path
@@ -33,9 +36,9 @@
         d="M 15 15.5 A 0.5 1.5 0 1 1  14,15.5 A 0.5 1.5 0 1 1  15 15.5 z"
         transform="matrix(0.866,0.5,-0.5,0.866,9.693,-5.173)"
         style="stroke:#000000;" />
-    </g>
-    <g 
-      v-if="name === 'black-knight-basic'"
+    </svg>
+    <svg 
+      v-if="name === 'black-knight-basic'" viewBox="0 0 45 45" 
       style="opacity:1; fill:none; fill-opacity:1; fill-rule:evenodd; stroke:#000000; stroke-width:1.5; stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4; stroke-dasharray:none; stroke-opacity:1;"
     >
       <path
@@ -54,10 +57,11 @@
       <path
         d="M 24.55,10.4 L 24.1,11.85 L 24.6,12 C 27.75,13 30.25,14.49 32.5,18.75 C 34.75,23.01 35.75,29.06 35.25,39 L 35.2,39.5 L 37.45,39.5 L 37.5,39 C 38,28.94 36.62,22.15 34.25,17.66 C 31.88,13.17 28.46,11.02 25.06,10.5 L 24.55,10.4 z "
         style="fill:#ffffff; stroke:none;" />
-    </g>
+    </svg>
+
     <!-- BISHOPS -->
-    <g 
-      v-if="name === 'white-bishop-basic'"
+    <svg
+      v-if="name === 'white-bishop-basic'" viewBox="0 0 45 45"
       style="opacity:1; fill:none; fill-rule:evenodd; fill-opacity:1; stroke:#000000; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round; stroke-miterlimit:4; stroke-dasharray:none; stroke-opacity:1;"
     >
       <g style="fill:#ffffff; stroke:#000000; stroke-linecap:butt;">
@@ -66,9 +70,9 @@
         <path d="M 25 8 A 2.5 2.5 0 1 1  20,8 A 2.5 2.5 0 1 1  25 8 z"/>
       </g>
       <path d="M 17.5,26 L 27.5,26 M 15,30 L 30,30 M 22.5,15.5 L 22.5,20.5 M 20,18 L 25,18" style="fill:none; stroke:#000000; stroke-linejoin:miter;"/>
-    </g>
-    <g 
-      v-if="name === 'black-bishop-basic'"
+    </svg>
+    <svg
+      v-if="name === 'black-bishop-basic'" viewBox="0 0 45 45" 
       style="opacity:1; fill:none; fill-rule:evenodd; fill-opacity:1; stroke:#000000; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round; stroke-miterlimit:4; stroke-dasharray:none; stroke-opacity:1;"
     >
       <g style="fill:#000000; stroke:#000000; stroke-linecap:butt;">
@@ -77,10 +81,11 @@
         <path d="M 25 8 A 2.5 2.5 0 1 1  20,8 A 2.5 2.5 0 1 1  25 8 z"/>
       </g>
       <path d="M 17.5,26 L 27.5,26 M 15,30 L 30,30 M 22.5,15.5 L 22.5,20.5 M 20,18 L 25,18" style="fill:none; stroke:#ffffff; stroke-linejoin:miter;"/>
-    </g>
+    </svg>
+
     <!-- ROOKS -->
-    <g 
-      v-if="name === 'white-rook-basic'"
+    <svg
+      v-if="name === 'white-rook-basic'" viewBox="0 0 45 45" 
       style="opacity:1; fill:#ffffff; fill-opacity:1; fill-rule:evenodd; stroke:#000000; stroke-width:1.5; stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4; stroke-dasharray:none; stroke-opacity:1;"
     >
       <path
@@ -102,9 +107,9 @@
       <path
         d="M 11,14 L 34,14"
         style="fill:none; stroke:#000000; stroke-linejoin:miter;" />
-    </g>
-    <g 
-      v-if="name === 'black-rook-basic'"
+    </svg>
+    <svg
+      v-if="name === 'black-rook-basic'" viewBox="0 0 45 45" 
       style="opacity:1; fill:000000; fill-opacity:1; fill-rule:evenodd; stroke:#000000; stroke-width:1.5; stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4; stroke-dasharray:none; stroke-opacity:1;"
     >
       <path
@@ -140,10 +145,11 @@
       <path
         d="M 11,14 L 34,14"
         style="fill:none; stroke:#ffffff; stroke-width:1; stroke-linejoin:miter;" />
-    </g>
+    </svg>
+
     <!-- QUEENS -->
-    <g 
-      v-if="name === 'white-queen-basic'"
+    <svg
+      v-if="name === 'white-queen-basic'" viewBox="0 0 45 45" 
       style="opacity:1; fill:#ffffff; fill-opacity:1; fill-rule:evenodd; stroke:#000000; stroke-width:1.5; stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4; stroke-dasharray:none; stroke-opacity:1;"
     >
       <path d="M 9 13 A 2 2 0 1 1  5,13 A 2 2 0 1 1  9 13 z" transform="translate(-1,-1)"/>
@@ -155,9 +161,9 @@
       <path d="M 9,26 C 9,28 10.5,28 11.5,30 C 12.5,31.5 12.5,31 12,33.5 C 10.5,34.5 11,36 11,36 C 9.5,37.5 11,38.5 11,38.5 C 17.5,39.5 27.5,39.5 34,38.5 C 34,38.5 35.5,37.5 34,36 C 34,36 34.5,34.5 33,33.5 C 32.5,31 32.5,31.5 33.5,30 C 34.5,28 36,28 36,26 C 27.5,24.5 17.5,24.5 9,26 z" style="stroke-linecap:butt;"/>
       <path d="M 11.5,30 C 15,29 30,29 33.5,30" style="fill:none;"/>
       <path d="M 12,33.5 C 18,32.5 27,32.5 33,33.5" style="fill:none;"/>
-    </g>
-    <g 
-      v-if="name === 'black-queen-basic'"
+    </svg>
+    <svg 
+      v-if="name === 'black-queen-basic'" viewBox="0 0 45 45" 
       style="opacity:1; fill:000000; fill-opacity:1; fill-rule:evenodd; stroke:#000000; stroke-width:1.5; stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4; stroke-dasharray:none; stroke-opacity:1;"
     >
       <g style="fill:#000000; stroke:none;">
@@ -174,10 +180,11 @@
       <path d="M 12.5,31.5 L 32.5,31.5" style="fill:none; stroke:#ffffff;"/>
       <path d="M 11.5,34.5 A 35,35 1 0 0 33.5,34.5" style="fill:none; stroke:#ffffff;"/>
       <path d="M 10.5,37.5 A 35,35 1 0 0 34.5,37.5" style="fill:none; stroke:#ffffff;"/>
-    </g>
+    </svg>
+
     <!-- KINGS -->
-    <g 
-      v-if="name === 'white-king-basic'"
+    <svg 
+      v-if="name === 'white-king-basic'" viewBox="0 0 45 45" 
       style="fill:none; fill-opacity:1; fill-rule:evenodd; stroke:#000000; stroke-width:1.5; stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4; stroke-dasharray:none; stroke-opacity:1;"
     >
       <path d="M 22.5,11.63 L 22.5,6" style="fill:none; stroke:#000000; stroke-linejoin:miter;"/>
@@ -187,9 +194,9 @@
       <path d="M 12.5,30 C 18,27 27,27 32.5,30" style="fill:none; stroke:#000000;"/>
       <path d="M 12.5,33.5 C 18,30.5 27,30.5 32.5,33.5" style="fill:none; stroke:#000000;"/>
       <path d="M 12.5,37 C 18,34 27,34 32.5,37" style="fill:none; stroke:#000000;"/>
-    </g>
-    <g 
-      v-if="name === 'black-king-basic'"
+    </svg>
+    <svg
+      v-if="name === 'black-king-basic'" viewBox="0 0 45 45" 
       style="fill:none; fill-opacity:1; fill-rule:evenodd; stroke:#000000; stroke-width:1.5; stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4; stroke-dasharray:none; stroke-opacity:1;"
     >
       <path d="M 22.5,11.63 L 22.5,6" style="fill:none; stroke:#000000; stroke-linejoin:miter;" id="path6570"/>
@@ -198,9 +205,9 @@
       <path d="M 20,8 L 25,8" style="fill:none; stroke:#000000; stroke-linejoin:miter;"/>
       <path d="M 32,29.5 C 32,29.5 40.5,25.5 38.03,19.85 C 34.15,14 25,18 22.5,24.5 L 22.5,26.6 L 22.5,24.5 C 20,18 10.85,14 6.97,19.85 C 4.5,25.5 13,29.5 13,29.5" style="fill:none; stroke:#ffffff;"/>
       <path d="M 12.5,30 C 18,27 27,27 32.5,30 M 12.5,33.5 C 18,30.5 27,30.5 32.5,33.5 M 12.5,37 C 18,34 27,34 32.5,37" style="fill:none; stroke:#ffffff;"/>
-    </g>
-
+    </svg>
   </svg>
+
 </template>
 
 <script>
