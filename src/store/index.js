@@ -4,7 +4,7 @@ export default createStore({
   state: {
     board: [],
     isWhiteView: true,
-    turn: 'white',
+    side: 'white',
     selectedPiece: null,
     allowedMoves: {},
     squareSize: 50,
@@ -35,12 +35,12 @@ export default createStore({
   },
   mutations: {
     selectPiece: (state, pos) => {
-      const { board: b, turn: tn } = state
+      const { board: b, side: sd } = state
       if (!pos) {
         state.selectedPiece = null
         return
       }
-      state.selectedPiece = typeof b[pos] === 'object' && b[pos].side === tn ? pos : null
+      state.selectedPiece = typeof b[pos] === 'object' && b[pos].side === sd ? pos : null
     },
     calcMoveAnimationData: (state, pos) => {
       const { squareSize: s, selectedPiece: p } = state
