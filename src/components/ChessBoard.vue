@@ -1,13 +1,17 @@
 <template>
   <div 
     class="board" 
-    :style="{ '--squareSize': pxSquareSize, '--offsetX': pxOffsetX, '--offsetY': pxOffsetY }"
+    :style="{ 
+      '--squareSize': getSquareSize, 
+      '--offsetX': animation.offsetX, 
+      '--offsetY': animation.offsetY
+    }"
   >
     <div 
       v-for="(data, i) in getBoardRenderData" :key="i" 
       @click="selectSquare(data.position)"
       class="square"
-      :style="{ background: data.squareBg }"
+      :style="{ background: data.background }"
     >
       <transition name="move">
         <Image 
@@ -15,46 +19,30 @@
           :name="data.pieceSVGName"
         />
       </transition>
-      <div :class="{ 'allowed': data.allowed, 'selected': data.selected }"></div>
+      <div 
+        :class="{ 
+          'allowed': getAllowedMoves4Piece[data.position] === true, 
+          'selected': selectedPiece === data.position 
+        }"
+      ></div>
     </div>
   </div>
 </template>
 
 <script>
 import { mapGetters, mapState } from 'vuex'
-import Image from './Image'
+import Image from './Image.vue'
 
 export default {
   components: { Image },
-  data() {
-    return {
-      offsetX: 0,
-      offsetY: 0,
-      squareSize: 50
-    }
-  },
   computed: { 
-    ...mapGetters(['getBoardRenderData', 'isAllowedMove']),
-    ...mapState(['selectedPiece']),
-    pxOffsetX() { return this.offsetX + 'px' },
-    pxOffsetY() { return this.offsetY + 'px' },
-    pxSquareSize() { return this.squareSize + 'px' },
+    ...mapGetters(['getBoardRenderData', 'getAllowedMoves4Piece', 'getSquareSize']),
+    ...mapState(['selectedPiece', 'animation']),
   },
   methods: {
-    calcAnimationOffset(index) {
-      const startRank = ~~(this.selectedPiece / 8)
-      const startFile = this.selectedPiece % 8
-      const endRank = ~~(index / 8)
-      const endFile = index % 8
-      const dy = startRank - endRank
-      const dx = startFile - endFile
-      this.offsetY = (this.squareSize + 1) * dy
-      this.offsetX = (this.squareSize + 1) * dx
-      console.log(this.selectedPiece, index, dy, dx)
-    },
     selectSquare(index) {
-      if (this.isAllowedMove(index)) {
-        this.calcAnimationOffset(index)
+      if (this.getAllowedMoves4Piece[index]) {
+        this.$store.commit('calcMoveAnimationData', index)
         this.$store.commit('makeMove', index)
         this.$store.commit('selectPiece', null)
       } else {
@@ -73,7 +61,6 @@ export default {
     display: inline-grid;
     grid-template-columns: repeat(8, var(--squareSize));
     grid-template-rows: repeat(8, var(--squareSize));
-    grid-gap: 1px;
     background: black;
   }
   .square {

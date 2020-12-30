@@ -6,25 +6,31 @@ export default createStore({
     isWhiteView: true,
     selectedPiece: null,
     allowedMoves: {},
+    squareSize: 50,
     theme: {
       name: 'basic',
       lightSquareBg: 'rgb(224,164,79)',
       darkSquareBg: 'rgb(165,79,8)'
+    },
+    animation: {
+      offsetX: '0',
+      offsetY: '0',
+      duration: '0.7s'
     }
   },
   getters: {
-    getBoardRenderData: ({ board: b, theme: t, isWhiteView: w, selectedPiece: p, allowedMoves: m }) => {
+    getBoardRenderData: ({ board: b, theme: t, isWhiteView: w }) => {
       const renderData = b.map((piece, index) => ({
         position: index,
-        squareBg: ~~(index / 8) % 2 === index % 2 ? t.lightSquareBg : t.darkSquareBg,
-        pieceSVGName: typeof piece === 'object' && piece.type ? `${piece.side}-${piece.type}-${t.name}` : null,
-        selected: index == p,
-        allowed: typeof m[p] === 'object' && m[p][index]
+        background: ~~(index / 8) % 2 === index % 2 ? t.lightSquareBg : t.darkSquareBg,
+        pieceSVGName: typeof piece === 'object' && piece.type ? `${piece.side}-${piece.type}-${t.name}` : null
       }))
       return w ? renderData.reverse() : renderData
     },
-    isAllowedMove: ({ allowedMoves: m, selectedPiece: p }) => 
-      to => typeof m[p] === 'object' && m[p][to] === true
+
+    getAllowedMoves4Piece: ({ selectedPiece: p, allowedMoves: m }) => typeof m[p] === 'object' ? m[p] : {},
+
+    getSquareSize: ({ squareSize: s }) => s + 'px'
   },
   mutations: {
     selectPiece: (state, pos) => {
@@ -34,6 +40,11 @@ export default createStore({
       }
       const target = state.board[pos]
       state.selectedPiece = typeof target === 'object' && target.type ? pos : null
+    },
+    calcMoveAnimationData: (state, pos) => {
+      const { squareSize: s, selectedPiece: p } = state
+      state.animation.offsetX = s * (p % 8 - pos % 8) + 'px'
+      state.animation.offsetY = s * (~~(p / 8) - ~~(pos / 8)) + 'px'
     },
     // JUST FOR TESTING PURPOSE. IT NEEDS TO BE FETCHED FROM BACKEND
     fillAllowedMoves: state => {
