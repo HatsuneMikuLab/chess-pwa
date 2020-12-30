@@ -66,7 +66,7 @@ export default createStore({
       state.board[to] = state.board[state.selectedPiece]
       state.board[state.selectedPiece] = {}
     },
-    makeClockTick: (state) => { state.clock[state.turn]--; console.log(state.clock.white) },
+    makeClockTick: (state) => state.clock[state.turn]--,
     setupStartPosition: state => {
       const startPos = [];
       for (let i = 0; i < 64; i++) {
