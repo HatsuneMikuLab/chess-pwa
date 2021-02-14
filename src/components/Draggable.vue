@@ -1,7 +1,7 @@
 <template lang="">
   <div
     ref="rect"
-    @mouse-down="handleMouseDown" @mouse-up="handleMouseUp"
+    @mousedown="startDragging" @mouseup="endDragging"
     class="draggable"
     :style="{ left: data.offsetX, top: data.offsetY }"
   >
@@ -16,33 +16,34 @@ export default {
   
   setup() {
     const rect = ref(null)
-    let startX = 0
-    let startY = 0
-    let offsetX = 0
-    let offsetY = 0
+    let startX = ref(0)
+    let startY = ref(0)
+    let offsetX = ref(0)
+    let offsetY = ref(0)
 
     const data = reactive({
-      offsetX: computed(() => `${offsetX}px`),
-      offsetY: computed(() => `${offsetY}px`)
+      offsetX: computed(() => `${offsetX.value}px`),
+      offsetY: computed(() => `${offsetY.value}px`)
     })
 
     const handleMouseMove = ({ clientX, clientY }) => {
-      offsetX = clientX - startX
-      offsetY = clientY - startY 
+      offsetX.value = clientX - startX.value
+      offsetY.value = clientY - startY.value
+      console.log(offsetX, offsetY)
     }
 
-    const handleMouseDown = ({ clientX, clientY }) => {
-      startX = clientX
-      startY = clientY
+    const startDragging = ({ clientX, clientY }) => {
+      startX.value = clientX
+      startY.value = clientY
       rect.value.onmousemove = handleMouseMove
     }
 
-    const handleMouseUp = ({ clientX, clientY }) => {
+    const endDragging = ({ clientX, clientY }) => {
       rect.value.onmousemove = null
       console.log(clientX, clientY)
     }
 
-    return { data, rect, handleMouseMove, handleMouseDown, handleMouseUp }
+    return { data, rect, handleMouseMove, startDragging, endDragging }
   }
 }
 </script>

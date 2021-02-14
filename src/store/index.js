@@ -2,16 +2,25 @@ import { createStore } from 'vuex'
 
 export default createStore({
   state: {
-    board: [],
-    isWhiteView: true,
+    pieces: {},
+    allowedMoves: {},
+    markers: {},
+    selectedPiece: null,
+   
+    isWhiteView: false,
+    isWhiteMove: true,
+    isWhiteSide: true,
     side: 'white',
     turn: 'white',
-    selectedPiece: null,
-    allowedMoves: {},
+    
+    //endPos: null,
+    hoveredSquare: null,
+    
     squareSize: 50,
     clock: {
       white: 5 * 60,
-      black: 5 * 60
+      black: 5 * 60,
+      handler: null
     },
     theme: {
       name: 'basic',
@@ -25,50 +34,50 @@ export default createStore({
     }
   },
   getters: {
-    getBoardRenderData: ({ board: b, theme: t, isWhiteView: w }) => {
-      const renderData = b.map((piece, index) => ({
-        position: index,
-        background: ~~(index / 8) % 2 === index % 2 ? t.lightSquareBg : t.darkSquareBg,
-        pieceSVGName: typeof piece === 'object' && piece.type ? `${piece.side}-${piece.type}-${t.name}` : null
-      }))
-      return w ? renderData.reverse() : renderData
-    },
-
-    getAllowedMoves4Piece: ({ selectedPiece: p, allowedMoves: m }) => typeof m[p] === 'object' ? m[p] : {},
-
-    getSquareSize: ({ squareSize: s }) => s + 'px',
-
     getAnalogClockRotation: ({ clock: c }) => side => ({
-      min: c[side] / 10,
-      sec: (c[side] % 60) * 6
+      min: -c[side] / 10,
+      sec: -(c[side] % 60) * 6
     })
   },
   mutations: {
     selectPiece: (state, pos) => {
-      const { board: b, side: sd } = state
-      if (!pos) {
+      const { allowedMoves: am, pieces: p, side: s } = state
+      if (typeof p[pos] !== 'object' || p[pos].side !== s) return
+      state.selectedPiece = pos
+      state.markers = {}
+      Object.keys(typeof am[pos] === 'object' ? am[pos] : {}).forEach(
+        pos => typeof p[pos] !== 'object' ? state.markers[pos] = 'promotion' : state.markers[pos] = 'capture'
+      )
+    },
+    selectPosition: (state, pos) => {
+      const { selectedPiece: sp, markers: m,  } = state
+    
+      if (m[pos]) {
+        state.pieces[pos] = state.pieces[sp] 
+        delete state.pieces[sp]
         state.selectedPiece = null
-        return
+        //TODO make request with move data
       }
-      state.selectedPiece = typeof b[pos] === 'object' && b[pos].side === sd ? pos : null
+      state.markers = {}
     },
-    calcMoveAnimationData: (state, pos) => {
-      const { squareSize: s, selectedPiece: p } = state
-      state.animation.offsetX = s * (p % 8 - pos % 8) + 'px'
-      state.animation.offsetY = s * (~~(p / 8) - ~~(pos / 8)) + 'px'
+
+    calcMoveAnimation: (state, pos) => {
+      const { squareSize: ss, selectedPiece: sp, isWhiteView: wv } = state
+      state.animation.offsetX = (wv ? -1 : 1) * ss * (pos % 8 - sp % 8) + 'px'
+      state.animation.offsetY = (wv ? -1 : 1) * ss * (~~(pos / 8) - ~~(sp / 8)) + 'px'
     },
+    hoverSquare: (state, pos) => state.hoveredSquare = pos,
     // JUST FOR TESTING PURPOSE. IT NEEDS TO BE FETCHED FROM BACKEND
     fillAllowedMoves: state => {
       for (let i = 8; i < 16; i++) state.allowedMoves[i] = { [i+8]: true, [i+16]: true }
       for (let i = 1; i < 8; i+=5) state.allowedMoves[i] = { [i+15]: true, [i+17]: true }
     },
-    makeMove: (state, to) => {
-      state.board[to] = state.board[state.selectedPiece]
-      state.board[state.selectedPiece] = {}
-    },
     makeClockTick: (state) => state.clock[state.turn]--,
+    setupClock: (state, { side, sec }) => state.clock[side] = sec,
+    stopClock: (state) => clearInterval(state.clock.handler),
+
     setupStartPosition: state => {
-      const startPos = [];
+      const startPos = {}
       for (let i = 0; i < 64; i++) {
         switch (true) {
           case i >= 8 && i < 16: startPos[i] = { type: 'pawn', side: 'white' }; break;
@@ -83,14 +92,13 @@ export default createStore({
           case i === 60: startPos[i] = { type: 'queen', side: 'black' }; break
           case i === 3: startPos[i] = { type: 'king', side: 'white' }; break
           case i === 59: startPos[i] = { type: 'king', side: 'black' }; break
-
-          default: startPos[i] = {}
+          case i === 19: startPos[i] = { type: 'pawn', side: 'black' }; break
         }
       }
-      state.board = startPos
+      state.pieces = startPos
     }
   },
   actions: {
-    startClock: ({ commit }) => setInterval(() => commit('makeClockTick'), 1000)
+    startClock: ({ commit, state }) => state.clock.handler = setInterval(() => commit('makeClockTick'), 1000)
   }
 })

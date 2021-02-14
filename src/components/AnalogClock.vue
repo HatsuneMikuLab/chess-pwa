@@ -59,9 +59,6 @@ export default {
   computed: {
     ...mapGetters(['getAnalogClockRotation']),
     ...mapState(['turn'])
-  },
-  mounted() {
-    if(this.turn === this.side) this.$store.dispatch('startClock')
   }
 }
 </script>

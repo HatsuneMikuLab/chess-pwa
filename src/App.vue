@@ -19,6 +19,12 @@ export default {
   computed: {
     ...mapState(['side']),
     opponent() { return this.side === 'white' ? 'black' : 'white' }
+  },
+  mounted() {
+    this.$store.commit('setupStartPosition')
+    this.$store.commit("setupClock", { side: 'white', sec: 600 })
+    this.$store.commit("setupClock", { side: 'black', sec: 180 })
+    this.$store.dispatch('startClock')
   }
 }
 </script>
